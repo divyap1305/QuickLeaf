@@ -2,9 +2,16 @@ import { Plus } from "lucide-react"
 
 function AddNote(props) {
   return (
-    <div className="bg-white p-6 rounded-3xl shadow-sm mb-8 border border-gray-100">
+    <div className={`p-6 rounded-3xl shadow-sm mb-8 border
+      ${props.darkMode
+        ? "bg-gray-900 border-gray-700"
+        : "bg-white border-gray-100"
+      }
+    `}>
 
-      <h2 className="text-3xl font-bold text-green-700 mb-6">
+      <h2 className={`text-3xl font-bold mb-6
+        ${props.darkMode ? "text-green-400" : "text-green-700"}
+      `}>
         Create Note
       </h2>
 
@@ -14,7 +21,12 @@ function AddNote(props) {
         placeholder="Enter note title..."
         value={props.title}
         onChange={props.handleTitleChange}
-        className="w-full border border-gray-200 p-4 rounded-2xl mb-4 outline-none focus:border-green-600"
+        className={`w-full p-4 rounded-2xl mb-4 outline-none border
+          ${props.darkMode
+            ? "bg-gray-800 border-gray-700 text-white"
+            : "border-gray-200"
+          }
+        `}
       />
 
       {/* Content */}
@@ -22,7 +34,12 @@ function AddNote(props) {
         placeholder="Write your thoughts..."
         value={props.content}
         onChange={props.handleContentChange}
-        className="w-full border border-gray-200 p-4 rounded-2xl mb-5 h-36 outline-none focus:border-green-600 resize-none"
+        className={`w-full p-4 rounded-2xl mb-5 h-36 outline-none resize-none border
+          ${props.darkMode
+            ? "bg-gray-800 border-gray-700 text-white"
+            : "border-gray-200"
+          }
+        `}
       ></textarea>
 
       {/* Button */}

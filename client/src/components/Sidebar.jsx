@@ -6,9 +6,11 @@ import {
   Settings
 } from "lucide-react"
 
-function Sidebar() {
+function Sidebar(props) {
   return (
-    <div className="w-64 min-h-screen bg-green-700 text-white p-6 hidden md:block">
+    <div className={`w-64 min-h-screen p-6 hidden md:block
+      ${props.darkMode ? "bg-black text-white" : "bg-green-700 text-white"}
+    `}>
 
       {/* Logo */}
       <h1 className="text-3xl font-bold mb-12">

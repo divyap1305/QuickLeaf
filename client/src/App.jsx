@@ -19,14 +19,20 @@ function App() {
     return []
   })
 
+  // Dark Mode State
+  const [darkMode, setDarkMode] = useState(() => {
+
+    const savedTheme = localStorage.getItem("quickleaf-theme")
+
+    return savedTheme === "dark"
+  })
+
   // Input States
   const [title, setTitle] = useState("")
   const [content, setContent] = useState("")
-
-  // Search State
   const [search, setSearch] = useState("")
 
-  // Save Notes to Local Storage
+  // Save Notes
   useEffect(() => {
 
     localStorage.setItem(
@@ -36,17 +42,30 @@ function App() {
 
   }, [notes])
 
-  // Handle Title
+  // Save Theme
+  useEffect(() => {
+
+    localStorage.setItem(
+      "quickleaf-theme",
+      darkMode ? "dark" : "light"
+    )
+
+  }, [darkMode])
+
+  // Toggle Dark Mode
+  function toggleDarkMode() {
+    setDarkMode(!darkMode)
+  }
+
+  // Handle Inputs
   function handleTitleChange(event) {
     setTitle(event.target.value)
   }
 
-  // Handle Content
   function handleContentChange(event) {
     setContent(event.target.value)
   }
 
-  // Handle Search
   function handleSearch(event) {
     setSearch(event.target.value)
   }
@@ -60,13 +79,12 @@ function App() {
     }
 
     const newNote = {
-      title: title,
-      content: content
+      title,
+      content
     }
 
     setNotes([...notes, newNote])
 
-    // Clear Inputs
     setTitle("")
     setContent("")
   }
@@ -91,10 +109,12 @@ function App() {
   })
 
   return (
-    <div className="flex bg-gray-100 min-h-screen">
+    <div className={`flex min-h-screen
+      ${darkMode ? "bg-gray-950" : "bg-gray-100"}
+    `}>
 
       {/* Sidebar */}
-      <Sidebar />
+      <Sidebar darkMode={darkMode} />
 
       {/* Main Section */}
       <div className="flex-1">
@@ -103,6 +123,8 @@ function App() {
         <Navbar
           search={search}
           handleSearch={handleSearch}
+          darkMode={darkMode}
+          toggleDarkMode={toggleDarkMode}
         />
 
         {/* Content */}
@@ -115,6 +137,7 @@ function App() {
             handleTitleChange={handleTitleChange}
             handleContentChange={handleContentChange}
             addNote={addNote}
+            darkMode={darkMode}
           />
 
           {/* Notes Grid */}
@@ -128,12 +151,15 @@ function App() {
                   title={note.title}
                   content={note.content}
                   deleteNote={() => deleteNote(index)}
+                  darkMode={darkMode}
                 />
               ))
 
             ) : (
 
-              <div className="col-span-3 text-center text-gray-500 text-2xl mt-10">
+              <div className={`col-span-3 text-center text-2xl mt-10
+                ${darkMode ? "text-gray-400" : "text-gray-500"}
+              `}>
                 No Notes Found 🌿
               </div>
 

@@ -1,33 +1,36 @@
+import { Plus } from "lucide-react"
+
 function AddNote(props) {
   return (
-    <div className="bg-white p-6 rounded-2xl shadow-md mb-8">
+    <div className="bg-white p-6 rounded-3xl shadow-sm mb-8 border border-gray-100">
 
-      <h2 className="text-2xl font-bold text-green-700 mb-4">
-        Create New Note
+      <h2 className="text-3xl font-bold text-green-700 mb-6">
+        Create Note
       </h2>
 
-      {/* Title Input */}
+      {/* Title */}
       <input
         type="text"
         placeholder="Enter note title..."
         value={props.title}
         onChange={props.handleTitleChange}
-        className="w-full border border-gray-300 p-3 rounded-xl mb-4 outline-none focus:border-green-600"
+        className="w-full border border-gray-200 p-4 rounded-2xl mb-4 outline-none focus:border-green-600"
       />
 
-      {/* Content Input */}
+      {/* Content */}
       <textarea
-        placeholder="Write your note..."
+        placeholder="Write your thoughts..."
         value={props.content}
         onChange={props.handleContentChange}
-        className="w-full border border-gray-300 p-3 rounded-xl mb-4 h-32 outline-none focus:border-green-600"
+        className="w-full border border-gray-200 p-4 rounded-2xl mb-5 h-36 outline-none focus:border-green-600 resize-none"
       ></textarea>
 
       {/* Button */}
       <button
         onClick={props.addNote}
-        className="bg-green-700 text-white px-6 py-3 rounded-xl hover:bg-green-800 transition"
+        className="flex items-center gap-2 bg-green-700 text-white px-6 py-3 rounded-2xl hover:bg-green-800 transition"
       >
+        <Plus size={20} />
         Add Note
       </button>
 

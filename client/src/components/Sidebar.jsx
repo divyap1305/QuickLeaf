@@ -1,32 +1,50 @@
+import {
+  LayoutDashboard,
+  NotebookPen,
+  Star,
+  Archive,
+  Settings
+} from "lucide-react"
+
 function Sidebar() {
   return (
-    <div className="w-64 h-screen bg-green-700 text-white p-5">
-      
-      <h2 className="text-3xl font-bold mb-10">
-        QuickLeaf 🌿
-      </h2>
+    <div className="w-64 min-h-screen bg-green-700 text-white p-6 hidden md:block">
 
-      <ul className="space-y-5 text-lg">
-        <li className="hover:text-green-200 cursor-pointer">
+      {/* Logo */}
+      <h1 className="text-3xl font-bold mb-12">
+        QuickLeaf 🌿
+      </h1>
+
+      {/* Menu */}
+      <ul className="space-y-6">
+
+        <li className="flex items-center gap-3 hover:text-green-200 cursor-pointer transition">
+          <LayoutDashboard size={22} />
           Dashboard
         </li>
 
-        <li className="hover:text-green-200 cursor-pointer">
-          All Notes
+        <li className="flex items-center gap-3 hover:text-green-200 cursor-pointer transition">
+          <NotebookPen size={22} />
+          Notes
         </li>
 
-        <li className="hover:text-green-200 cursor-pointer">
+        <li className="flex items-center gap-3 hover:text-green-200 cursor-pointer transition">
+          <Star size={22} />
           Favorites
         </li>
 
-        <li className="hover:text-green-200 cursor-pointer">
+        <li className="flex items-center gap-3 hover:text-green-200 cursor-pointer transition">
+          <Archive size={22} />
           Archived
         </li>
 
-        <li className="hover:text-green-200 cursor-pointer">
+        <li className="flex items-center gap-3 hover:text-green-200 cursor-pointer transition">
+          <Settings size={22} />
           Settings
         </li>
+
       </ul>
+
     </div>
   )
 }

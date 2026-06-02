@@ -10,6 +10,7 @@ import Navbar from "./components/Navbar"
 import Sidebar from "./components/Sidebar"
 import NoteCard from "./components/NoteCard"
 import AddNote from "./components/AddNote"
+import DeleteModal from "./components/DeleteModal"
 
 function App() {
 
@@ -28,6 +29,8 @@ function App() {
   const [title, setTitle] = useState("")
   const [content, setContent] = useState("")
   const [search, setSearch] = useState("")
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [selectedNoteId, setSelectedNoteId] = useState(null)
 
   // Fetch Notes
   useEffect(() => {
@@ -94,18 +97,31 @@ function App() {
 }
 
   // Delete Note
-  async function deleteNote(id) {
+function openDeleteModal(id) {
+
+  setSelectedNoteId(id)
+  setShowDeleteModal(true)
+}
+
+function closeDeleteModal() {
+
+  setShowDeleteModal(false)
+  setSelectedNoteId(null)
+}
+
+async function confirmDelete() {
 
   try {
 
-    await deleteNoteById(id)
+    await deleteNoteById(selectedNoteId)
 
     fetchNotes()
+
+    closeDeleteModal()
 
   } catch (error) {
 
     console.log(error)
-
   }
 }
 
@@ -173,7 +189,7 @@ function App() {
                   key={index}
                   title={note.title}
                   content={note.content}
-                  deleteNote={() => deleteNote(note._id)}
+                  deleteNote={() => openDeleteModal(note._id)}
                   darkMode={darkMode}
                 />
               ))
@@ -187,6 +203,11 @@ function App() {
               </div>
 
             )}
+            <DeleteModal
+  show={showDeleteModal}
+  onCancel={closeDeleteModal}
+  onConfirm={confirmDelete}
+/>
 
           </div>
 

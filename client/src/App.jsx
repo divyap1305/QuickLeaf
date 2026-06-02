@@ -1,5 +1,11 @@
 import { useState, useEffect } from "react"
 
+import {
+  getNotes,
+  createNote,
+  deleteNoteById
+} from "./services/noteService"
+
 import Navbar from "./components/Navbar"
 import Sidebar from "./components/Sidebar"
 import NoteCard from "./components/NoteCard"
@@ -8,16 +14,7 @@ import AddNote from "./components/AddNote"
 function App() {
 
   // Notes State
-  const [notes, setNotes] = useState(() => {
-
-    const savedNotes = localStorage.getItem("quickleaf-notes")
-
-    if (savedNotes) {
-      return JSON.parse(savedNotes)
-    }
-
-    return []
-  })
+  const [notes, setNotes] = useState([])
 
   // Dark Mode State
   const [darkMode, setDarkMode] = useState(() => {
@@ -32,15 +29,12 @@ function App() {
   const [content, setContent] = useState("")
   const [search, setSearch] = useState("")
 
-  // Save Notes
+  // Fetch Notes
   useEffect(() => {
 
-    localStorage.setItem(
-      "quickleaf-notes",
-      JSON.stringify(notes)
-    )
-
-  }, [notes])
+  fetchNotes()
+  
+  }, [])
 
   // Save Theme
   useEffect(() => {
@@ -71,33 +65,49 @@ function App() {
   }
 
   // Add Note
-  function addNote() {
+  async function addNote() {
 
-    if (title.trim() === "" || content.trim() === "") {
-      alert("Please fill all fields")
-      return
-    }
+  if (title.trim() === "" || content.trim() === "") {
 
-    const newNote = {
+    alert("Please fill all fields")
+
+    return
+  }
+
+  try {
+
+    await createNote({
       title,
       content
-    }
+    })
 
-    setNotes([...notes, newNote])
+    fetchNotes()
 
     setTitle("")
     setContent("")
+
+  } catch (error) {
+
+    console.log(error)
+
   }
+}
 
   // Delete Note
-  function deleteNote(indexToDelete) {
+  async function deleteNote(id) {
 
-    const updatedNotes = notes.filter((note, index) => {
-      return index !== indexToDelete
-    })
+  try {
 
-    setNotes(updatedNotes)
+    await deleteNoteById(id)
+
+    fetchNotes()
+
+  } catch (error) {
+
+    console.log(error)
+
   }
+}
 
   // Filter Notes
   const filteredNotes = notes.filter((note) => {
@@ -107,6 +117,19 @@ function App() {
       note.content.toLowerCase().includes(search.toLowerCase())
     )
   })
+  async function fetchNotes() {
+
+  try {
+
+    const data = await getNotes()
+
+    setNotes(data)
+
+   } catch (error) {
+
+    console.log(error)
+   }
+  }
 
   return (
     <div className={`flex min-h-screen
@@ -150,7 +173,7 @@ function App() {
                   key={index}
                   title={note.title}
                   content={note.content}
-                  deleteNote={() => deleteNote(index)}
+                  deleteNote={() => deleteNote(note._id)}
                   darkMode={darkMode}
                 />
               ))

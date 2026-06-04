@@ -58,8 +58,37 @@ const deleteNote = async (req, res) => {
   }
 }
 
+const updateNote = async (req, res) => {
+
+  try {
+
+    const { title, content } = req.body
+
+    const updatedNote =
+      await Note.findByIdAndUpdate(
+        req.params.id,
+        {
+          title,
+          content
+        },
+        {
+          new: true
+        }
+      )
+
+    res.json(updatedNote)
+
+  } catch (error) {
+
+    res.status(500).json({
+      message: error.message
+    })
+  }
+}
+
 module.exports = {
   createNote,
   getNotes,
-  deleteNote
+  deleteNote,
+  updateNote
 }

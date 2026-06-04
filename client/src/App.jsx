@@ -3,7 +3,8 @@ import { useState, useEffect } from "react"
 import {
   getNotes,
   createNote,
-  deleteNoteById
+  deleteNoteById,
+  updateNoteById
 } from "./services/noteService"
 
 import Navbar from "./components/Navbar"
@@ -28,6 +29,7 @@ function App() {
   // Input States
   const [title, setTitle] = useState("")
   const [content, setContent] = useState("")
+  const [editingId, setEditingId] = useState(null)
   const [search, setSearch] = useState("")
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [selectedNoteId, setSelectedNoteId] = useState(null)
@@ -68,31 +70,46 @@ function App() {
   }
 
   // Add Note
-  async function addNote() {
+async function addNote() {
 
-  if (title.trim() === "" || content.trim() === "") {
-
+  if (
+    title.trim() === "" ||
+    content.trim() === ""
+  ) {
     alert("Please fill all fields")
-
     return
   }
 
   try {
 
-    await createNote({
-      title,
-      content
-    })
+    if (editingId) {
+
+      await updateNoteById(
+        editingId,
+        {
+          title,
+          content
+        }
+      )
+
+    } else {
+
+      await createNote({
+        title,
+        content
+      })
+
+    }
 
     fetchNotes()
 
     setTitle("")
     setContent("")
+    setEditingId(null)
 
   } catch (error) {
 
     console.log(error)
-
   }
 }
 
@@ -147,6 +164,16 @@ async function confirmDelete() {
    }
   }
 
+  // Edit Note
+  function startEditing(note) {
+
+  setTitle(note.title)
+
+  setContent(note.content)
+
+  setEditingId(note._id)
+}
+
   return (
     <div className={`flex min-h-screen
       ${darkMode ? "bg-gray-950" : "bg-gray-100"}
@@ -177,6 +204,7 @@ async function confirmDelete() {
             handleContentChange={handleContentChange}
             addNote={addNote}
             darkMode={darkMode}
+            editingId={editingId}
           />
 
           {/* Notes Grid */}
@@ -190,6 +218,7 @@ async function confirmDelete() {
                   title={note.title}
                   content={note.content}
                   deleteNote={() => openDeleteModal(note._id)}
+                  editNote={() => startEditing(note)}
                   darkMode={darkMode}
                 />
               ))

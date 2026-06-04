@@ -48,8 +48,10 @@ function AddNote(props) {
         className="flex items-center gap-2 bg-green-700 text-white px-6 py-3 rounded-2xl hover:bg-green-800 transition"
       >
         <Plus size={20} />
-        Add Note
-      </button>
+        {props.editingId
+        ? "Update Note"
+        : "Add Note"}
+        </button>
 
     </div>
   )

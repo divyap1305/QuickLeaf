@@ -26,13 +26,23 @@ function NoteCard(props) {
       {/* Footer */}
       <div className="flex justify-end">
 
-        <button
-          onClick={props.deleteNote}
-          className="flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-xl hover:bg-red-600 transition"
-        >
-          <Trash2 size={18} />
-          Delete
-        </button>
+        <div className="flex justify-end gap-3">
+
+  <button
+    onClick={props.editNote}
+    className="bg-blue-500 text-white px-4 py-2 rounded-xl hover:bg-blue-600 transition"
+  >
+    Edit
+  </button>
+
+  <button
+    onClick={props.deleteNote}
+    className="bg-red-500 text-white px-4 py-2 rounded-xl hover:bg-red-600 transition"
+  >
+    Delete
+  </button>
+
+</div>
 
       </div>
 

@@ -1,6 +1,14 @@
 import { Trash2, Pin } from "lucide-react"
 
 function NoteCard(props) {
+  const createdDate =
+  new Date(props.createdAt)
+    .toLocaleDateString()
+
+  const updatedDate =
+  new Date(props.updatedAt)
+    .toLocaleDateString()
+
   return (
     <div className={`p-6 rounded-3xl shadow-sm hover:shadow-xl transition duration-300 border
       ${props.darkMode
@@ -38,6 +46,18 @@ function NoteCard(props) {
       `}>
         {props.content}
       </p>
+      
+      <div className="text-sm text-gray-500 mb-4">
+
+        <p>
+          Created: {createdDate}
+        </p>
+
+        <p>
+          Updated: {updatedDate}
+        </p>
+
+      </div>
 
       {/* Footer */}
       <div className="flex justify-end">

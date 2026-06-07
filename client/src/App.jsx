@@ -234,6 +234,8 @@ function App() {
                   content={note.content}
                   pinned={note.pinned}
                   pinNote={() => handlePin(note._id)}
+                  createdAt={note.createdAt}
+                  updatedAt={note.updatedAt}
                   editNote={() => startEditing(note)}
                   deleteNote={() =>
                     openDeleteModal(note._id)

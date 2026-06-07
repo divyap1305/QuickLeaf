@@ -1,4 +1,4 @@
-import { Trash2 } from "lucide-react"
+import { Trash2, Pin } from "lucide-react"
 
 function NoteCard(props) {
   return (
@@ -10,11 +10,27 @@ function NoteCard(props) {
     `}>
 
       {/* Title */}
-      <h2 className={`text-2xl font-bold mb-3
-        ${props.darkMode ? "text-green-400" : "text-green-700"}
-      `}>
-        {props.title}
-      </h2>
+      <div className="flex justify-between items-center mb-3">
+
+  <h2
+    className={`text-2xl font-bold
+      ${props.darkMode
+        ? "text-green-400"
+        : "text-green-700"}
+    `}
+  >
+    {props.title}
+  </h2>
+
+  {props.pinned && (
+    <span
+      className="bg-yellow-400 text-black px-3 py-1 rounded-full text-sm"
+    >
+      📌 Pinned
+    </span>
+  )}
+
+</div>
 
       {/* Content */}
       <p className={`mb-6 leading-relaxed
@@ -27,26 +43,35 @@ function NoteCard(props) {
       <div className="flex justify-end">
 
         <div className="flex justify-end gap-3">
+          <button
+            onClick={props.pinNote}
+            className={`px-4 py-2 rounded-xl text-white transition
+              ${props.pinned
+                ? "bg-yellow-500 hover:bg-yellow-600"
+                : "bg-gray-500 hover:bg-gray-600"
+              }
+            `}
+          >
+            <Pin size={18} />
+          </button>
 
-  <button
-    onClick={props.editNote}
-    className="bg-blue-500 text-white px-4 py-2 rounded-xl hover:bg-blue-600 transition"
-  >
-    Edit
-  </button>
+          <button
+            onClick={props.editNote}
+            className="bg-blue-500 text-white px-4 py-2 rounded-xl hover:bg-blue-600 transition"
+          >
+            Edit
+          </button>
 
-  <button
-    onClick={props.deleteNote}
-    className="bg-red-500 text-white px-4 py-2 rounded-xl hover:bg-red-600 transition"
-  >
-    Delete
-  </button>
-
-</div>
-
+          <button
+            onClick={props.deleteNote}
+            className="bg-red-500 text-white px-4 py-2 rounded-xl hover:bg-red-600 transition"
+          >
+            Delete
+          </button>
+        </div>
       </div>
 
-    </div>
+</div>
   )
 }
 

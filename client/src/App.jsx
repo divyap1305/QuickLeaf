@@ -4,7 +4,8 @@ import {
   getNotes,
   createNote,
   deleteNoteById,
-  updateNoteById
+  updateNoteById,
+  togglePin
 } from "./services/noteService"
 
 import Navbar from "./components/Navbar"
@@ -15,48 +16,49 @@ import DeleteModal from "./components/DeleteModal"
 
 function App() {
 
-  // Notes State
   const [notes, setNotes] = useState([])
 
-  // Dark Mode State
   const [darkMode, setDarkMode] = useState(() => {
-
     const savedTheme = localStorage.getItem("quickleaf-theme")
-
     return savedTheme === "dark"
   })
 
-  // Input States
   const [title, setTitle] = useState("")
   const [content, setContent] = useState("")
   const [editingId, setEditingId] = useState(null)
   const [search, setSearch] = useState("")
+
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [selectedNoteId, setSelectedNoteId] = useState(null)
 
   // Fetch Notes
-  useEffect(() => {
+  async function fetchNotes() {
+    try {
+      const data = await getNotes()
+      setNotes(data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
-  fetchNotes()
-  
+  useEffect(() => {
+    fetchNotes()
   }, [])
 
   // Save Theme
   useEffect(() => {
-
     localStorage.setItem(
       "quickleaf-theme",
       darkMode ? "dark" : "light"
     )
-
   }, [darkMode])
 
-  // Toggle Dark Mode
+  // Toggle Theme
   function toggleDarkMode() {
     setDarkMode(!darkMode)
   }
 
-  // Handle Inputs
+  // Inputs
   function handleTitleChange(event) {
     setTitle(event.target.value)
   }
@@ -69,123 +71,138 @@ function App() {
     setSearch(event.target.value)
   }
 
-  // Add Note
-async function addNote() {
+  // Create / Update Note
+  async function addNote() {
 
-  if (
-    title.trim() === "" ||
-    content.trim() === ""
-  ) {
-    alert("Please fill all fields")
-    return
-  }
-
-  try {
-
-    if (editingId) {
-
-      await updateNoteById(
-        editingId,
-        {
-          title,
-          content
-        }
-      )
-
-    } else {
-
-      await createNote({
-        title,
-        content
-      })
-
+    if (
+      title.trim() === "" ||
+      content.trim() === ""
+    ) {
+      alert("Please fill all fields")
+      return
     }
 
-    fetchNotes()
+    try {
 
-    setTitle("")
-    setContent("")
-    setEditingId(null)
+      if (editingId) {
 
-  } catch (error) {
+        await updateNoteById(
+          editingId,
+          {
+            title,
+            content
+          }
+        )
 
-    console.log(error)
-  }
-}
+      } else {
 
-  // Delete Note
-function openDeleteModal(id) {
+        await createNote({
+          title,
+          content
+        })
 
-  setSelectedNoteId(id)
-  setShowDeleteModal(true)
-}
+      }
 
-function closeDeleteModal() {
+      await fetchNotes()
 
-  setShowDeleteModal(false)
-  setSelectedNoteId(null)
-}
+      setTitle("")
+      setContent("")
+      setEditingId(null)
 
-async function confirmDelete() {
+    } catch (error) {
 
-  try {
-
-    await deleteNoteById(selectedNoteId)
-
-    fetchNotes()
-
-    closeDeleteModal()
-
-  } catch (error) {
-
-    console.log(error)
-  }
-}
-
-  // Filter Notes
-  const filteredNotes = notes.filter((note) => {
-
-    return (
-      note.title.toLowerCase().includes(search.toLowerCase()) ||
-      note.content.toLowerCase().includes(search.toLowerCase())
-    )
-  })
-  async function fetchNotes() {
-
-  try {
-
-    const data = await getNotes()
-
-    setNotes(data)
-
-   } catch (error) {
-
-    console.log(error)
-   }
+      console.log(error)
+    }
   }
 
-  // Edit Note
+  // Edit
   function startEditing(note) {
 
-  setTitle(note.title)
+    setTitle(note.title)
+    setContent(note.content)
+    setEditingId(note._id)
+  }
 
-  setContent(note.content)
+  // Delete Modal
+  function openDeleteModal(id) {
 
-  setEditingId(note._id)
-}
+    setSelectedNoteId(id)
+    setShowDeleteModal(true)
+  }
+
+  function closeDeleteModal() {
+
+    setShowDeleteModal(false)
+    setSelectedNoteId(null)
+  }
+
+  async function confirmDelete() {
+
+    try {
+
+      await deleteNoteById(selectedNoteId)
+
+      await fetchNotes()
+
+      closeDeleteModal()
+
+    } catch (error) {
+
+      console.log(error)
+    }
+  }
+
+  // Pin Note
+  async function handlePin(id) {
+
+    try {
+
+      await togglePin(id)
+
+      await fetchNotes()
+
+    } catch (error) {
+
+      console.log(error)
+    }
+  }
+
+  // Filter + Sort
+  const filteredNotes = notes
+    .filter((note) => {
+
+      return (
+        note.title
+          .toLowerCase()
+          .includes(search.toLowerCase()) ||
+
+        note.content
+          .toLowerCase()
+          .includes(search.toLowerCase())
+      )
+    })
+    .sort((a, b) => {
+
+      if (a.pinned === b.pinned) {
+        return 0
+      }
+
+      return a.pinned ? -1 : 1
+    })
 
   return (
-    <div className={`flex min-h-screen
-      ${darkMode ? "bg-gray-950" : "bg-gray-100"}
-    `}>
+    <div
+      className={`flex min-h-screen ${
+        darkMode
+          ? "bg-gray-950"
+          : "bg-gray-100"
+      }`}
+    >
 
-      {/* Sidebar */}
       <Sidebar darkMode={darkMode} />
 
-      {/* Main Section */}
       <div className="flex-1">
 
-        {/* Navbar */}
         <Navbar
           search={search}
           handleSearch={handleSearch}
@@ -193,10 +210,8 @@ async function confirmDelete() {
           toggleDarkMode={toggleDarkMode}
         />
 
-        {/* Content */}
         <div className="p-8">
 
-          {/* Add Note */}
           <AddNote
             title={title}
             content={content}
@@ -207,42 +222,52 @@ async function confirmDelete() {
             editingId={editingId}
           />
 
-          {/* Notes Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
 
             {filteredNotes.length > 0 ? (
 
-              filteredNotes.map((note, index) => (
+              filteredNotes.map((note) => (
+
                 <NoteCard
-                  key={index}
+                  key={note._id}
                   title={note.title}
                   content={note.content}
-                  deleteNote={() => openDeleteModal(note._id)}
+                  pinned={note.pinned}
+                  pinNote={() => handlePin(note._id)}
                   editNote={() => startEditing(note)}
+                  deleteNote={() =>
+                    openDeleteModal(note._id)
+                  }
                   darkMode={darkMode}
                 />
+
               ))
 
             ) : (
 
-              <div className={`col-span-3 text-center text-2xl mt-10
-                ${darkMode ? "text-gray-400" : "text-gray-500"}
-              `}>
+              <div
+                className={`col-span-3 text-center text-2xl mt-10 ${
+                  darkMode
+                    ? "text-gray-400"
+                    : "text-gray-500"
+                }`}
+              >
                 No Notes Found 🌿
               </div>
 
             )}
-            <DeleteModal
-  show={showDeleteModal}
-  onCancel={closeDeleteModal}
-  onConfirm={confirmDelete}
-/>
 
           </div>
 
         </div>
 
       </div>
+
+      <DeleteModal
+        show={showDeleteModal}
+        onCancel={closeDeleteModal}
+        onConfirm={confirmDelete}
+      />
 
     </div>
   )

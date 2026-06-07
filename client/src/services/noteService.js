@@ -43,3 +43,15 @@ export const updateNoteById =
 
     return response.data
 }
+
+// Toggle Pin Note
+export const togglePin =
+  async (id) => {
+
+    const response =
+      await axios.patch(
+        `${API_URL}/${id}/pin`
+      )
+
+    return response.data
+}

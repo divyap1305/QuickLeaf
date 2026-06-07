@@ -4,7 +4,8 @@ const {
   createNote,
   getNotes,
   deleteNote,
-  updateNote
+  updateNote,
+  togglePinNote
 } = require("../controllers/noteController")
 
 const router = express.Router()
@@ -14,5 +15,6 @@ router.post("/", createNote)
 router.get("/", getNotes)
 router.put("/:id", updateNote)
 router.delete("/:id", deleteNote)
+router.patch("/:id/pin", togglePinNote)
 
 module.exports = router

@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react"
+import { ToastContainer, toast } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
 
 import {
   getNotes,
@@ -93,6 +95,7 @@ function App() {
             content
           }
         )
+        toast.success("Note Updated ✏️")
 
       } else {
 
@@ -100,6 +103,7 @@ function App() {
           title,
           content
         })
+        toast.success("Note Created 🌿")
 
       }
 
@@ -145,6 +149,7 @@ function App() {
       await fetchNotes()
 
       closeDeleteModal()
+      toast.success("Note Deleted 🗑️")
 
     } catch (error) {
 
@@ -158,6 +163,7 @@ function App() {
     try {
 
       await togglePin(id)
+      toast.success("Note Pinned 📌")
 
       await fetchNotes()
 
@@ -269,6 +275,11 @@ function App() {
         show={showDeleteModal}
         onCancel={closeDeleteModal}
         onConfirm={confirmDelete}
+      />
+
+      <ToastContainer
+        position="top-right"
+        autoClose={2500}
       />
 
     </div>

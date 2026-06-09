@@ -30,6 +30,8 @@ function App() {
   const [tag, setTag] = useState("General")
   const [editingId, setEditingId] = useState(null)
   const [search, setSearch] = useState("")
+  const [selectedTag, setSelectedTag] = useState("All")
+  const [viewMode, setViewMode] = useState("all")
 
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [selectedNoteId, setSelectedNoteId] = useState(null)
@@ -184,26 +186,40 @@ function App() {
 
   // Filter + Sort
   const filteredNotes = notes
-    .filter((note) => {
+  .filter((note) => {
 
-      return (
-        note.title
-          .toLowerCase()
-          .includes(search.toLowerCase()) ||
+    const matchesSearch =
+      note.title
+        .toLowerCase()
+        .includes(search.toLowerCase()) ||
 
-        note.content
-          .toLowerCase()
-          .includes(search.toLowerCase())
-      )
-    })
-    .sort((a, b) => {
+      note.content
+        .toLowerCase()
+        .includes(search.toLowerCase())
 
-      if (a.pinned === b.pinned) {
-        return 0
-      }
+    const matchesTag =
+      selectedTag === "All" ||
+      note.tag === selectedTag
 
-      return a.pinned ? -1 : 1
-    })
+    const matchesView =
+      viewMode === "all" ||
+      (viewMode === "pinned" && note.pinned)
+
+    return (
+      matchesSearch &&
+      matchesTag &&
+      matchesView
+    )
+
+  })
+  .sort((a, b) => {
+
+    if (a.pinned === b.pinned) {
+      return 0
+    }
+
+    return a.pinned ? -1 : 1
+  })
 
   return (
     <div
@@ -214,7 +230,13 @@ function App() {
       }`}
     >
 
-      <Sidebar darkMode={darkMode} />
+      <Sidebar
+        darkMode={darkMode}
+        selectedTag={selectedTag}
+        setSelectedTag={setSelectedTag}
+        viewMode={viewMode}
+        setViewMode={setViewMode}
+      />
 
       <div className="flex-1">
 

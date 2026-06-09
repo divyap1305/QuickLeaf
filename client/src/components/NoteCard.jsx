@@ -39,6 +39,15 @@ function NoteCard(props) {
   )}
 
 </div>
+      {/* Tag */}
+      <div className="mb-3">
+        <span
+          className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm"
+        >
+          {props.tag}
+        </span>
+
+      </div>
 
       {/* Content */}
       <p className={`mb-6 leading-relaxed

@@ -5,12 +5,13 @@ const createNote = async (req, res) => {
 
   try {
 
-    const { title, content, pinned } = req.body
+    const { title, content, pinned, tag } = req.body
 
     const note = await Note.create({
       title,
       content,
-      pinned
+      pinned,
+      tag
     })
 
     res.status(201).json(note)
@@ -64,14 +65,15 @@ const updateNote = async (req, res) => {
 
   try {
 
-    const { title, content } = req.body
+    const { title, content, tag } = req.body
 
     const updatedNote =
       await Note.findByIdAndUpdate(
         req.params.id,
         {
           title,
-          content
+          content,
+          tag
         },
         {
           new: true

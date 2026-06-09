@@ -16,6 +16,11 @@ const noteSchema = new mongoose.Schema(
       type: Boolean,
       default: false
     },
+
+    tag:{
+      type: String,
+      default: "General"
+    },
   },
   
   {

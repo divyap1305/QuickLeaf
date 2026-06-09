@@ -27,6 +27,7 @@ function App() {
 
   const [title, setTitle] = useState("")
   const [content, setContent] = useState("")
+  const [tag, setTag] = useState("General")
   const [editingId, setEditingId] = useState(null)
   const [search, setSearch] = useState("")
 
@@ -73,6 +74,10 @@ function App() {
     setSearch(event.target.value)
   }
 
+  function handleTagChange(event) {
+    setTag(event.target.value)
+  }
+
   // Create / Update Note
   async function addNote() {
 
@@ -92,7 +97,8 @@ function App() {
           editingId,
           {
             title,
-            content
+            content,
+            tag
           }
         )
         toast.success("Note Updated ✏️")
@@ -101,7 +107,8 @@ function App() {
 
         await createNote({
           title,
-          content
+          content,
+          tag
         })
         toast.success("Note Created 🌿")
 
@@ -111,6 +118,7 @@ function App() {
 
       setTitle("")
       setContent("")
+      setTag("General")
       setEditingId(null)
 
     } catch (error) {
@@ -125,6 +133,7 @@ function App() {
     setTitle(note.title)
     setContent(note.content)
     setEditingId(note._id)
+    setTag(note.tag || "General")
   }
 
   // Delete Modal
@@ -221,8 +230,10 @@ function App() {
           <AddNote
             title={title}
             content={content}
+            tag={tag}
             handleTitleChange={handleTitleChange}
             handleContentChange={handleContentChange}
+            handleTagChange={handleTagChange}
             addNote={addNote}
             darkMode={darkMode}
             editingId={editingId}
@@ -238,6 +249,7 @@ function App() {
                   key={note._id}
                   title={note.title}
                   content={note.content}
+                  tag={note.tag}
                   pinned={note.pinned}
                   pinNote={() => handlePin(note._id)}
                   createdAt={note.createdAt}

@@ -29,6 +29,27 @@ function AddNote(props) {
         `}
       />
 
+      <select
+        value={props.tag}
+        onChange={props.handleTagChange}
+        className={`w-full p-4 rounded-2xl mb-4 border
+          ${props.darkMode
+            ? "bg-gray-800 border-gray-700 text-white"
+            : "border-gray-200"
+          }
+        `}
+      >
+
+        <option value="General">General</option>
+        <option value="React">React</option>
+        <option value="DSA">DSA</option>
+        <option value="Research">Research</option>
+        <option value="Project">Project</option>
+        <option value="College">College</option>
+        <option value="Personal">Personal</option>
+
+      </select>
+
       {/* Content */}
       <textarea
         placeholder="Write your thoughts..."

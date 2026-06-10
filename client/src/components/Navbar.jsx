@@ -1,6 +1,11 @@
 import { Search, Moon, Sun } from "lucide-react"
 
 function Navbar(props) {
+
+  const user = JSON.parse(
+    localStorage.getItem("user")
+  )
+
   function logout() {
     localStorage.removeItem("token")
     localStorage.removeItem("user")
@@ -53,12 +58,48 @@ function Navbar(props) {
           {props.darkMode ? <Sun size={20} /> : <Moon size={20} />}
         </button>
 
+        {/* User Info */}
+        <div className="hidden md:flex flex-col text-right">
+          <span
+            className={`font-semibold
+              ${
+                props.darkMode
+                  ? "text-white"
+                  : "text-gray-800"
+              }
+            `}
+          >
+            Welcome Back 👋
+          </span>
+
+          <span
+            className={`text-sm
+              ${
+                props.darkMode
+                  ? "text-gray-400"
+                  : "text-gray-600"
+              }
+            `}
+          >
+            {user?.name}
+          </span>
+
+        </div>
+
         {/* Logout Button */}
         <button
           onClick={logout}
-          className="bg-red-500 text-white px-4 py-2 rounded-xl"
+          className="
+            bg-red-500
+            hover:bg-red-600
+            text-white
+            px-4
+            py-2
+            rounded-xl
+            transition
+          "
         >
-          Logout
+          🚪 Logout
         </button>
 
       </div>

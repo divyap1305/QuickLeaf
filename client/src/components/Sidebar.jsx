@@ -19,6 +19,25 @@ function Sidebar(props) {
         QuickLeaf 🌿
       </h1>
 
+      <div
+        className="
+          mb-8
+          bg-white/10
+          p-3
+          rounded-xl
+        "
+      >
+
+        <p className="text-sm opacity-80">
+          Total Notes
+        </p>
+
+        <h2 className="text-2xl font-bold">
+          {props.notesCount}
+        </h2>
+
+      </div>
+
       {/* Navigation */}
       <h2 className="text-sm uppercase opacity-70 mb-3">
         Navigation

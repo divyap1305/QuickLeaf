@@ -237,6 +237,7 @@ function Home() {
         setSelectedTag={setSelectedTag}
         viewMode={viewMode}
         setViewMode={setViewMode}
+        notesCount={notes.length}
       />
 
       <div className="flex-1">

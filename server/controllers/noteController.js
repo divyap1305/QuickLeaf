@@ -11,7 +11,8 @@ const createNote = async (req, res) => {
       title,
       content,
       pinned,
-      tag
+      tag,
+      user: req.user.id
     })
 
     res.status(201).json(note)
@@ -29,7 +30,10 @@ const getNotes = async (req, res) => {
 
   try {
 
-    const notes = await Note.find()
+    const notes =
+  await Note.find({
+    user: req.user.id
+  })
 
     res.json(notes)
 

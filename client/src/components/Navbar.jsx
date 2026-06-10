@@ -1,6 +1,13 @@
 import { Search, Moon, Sun } from "lucide-react"
 
 function Navbar(props) {
+  function logout() {
+    localStorage.removeItem("token")
+    localStorage.removeItem("user")
+
+    window.location.replace("/login")
+  }
+
   return (
     <div className={`shadow-sm p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4
       ${props.darkMode ? "bg-gray-900" : "bg-white"}
@@ -44,6 +51,14 @@ function Navbar(props) {
           className="bg-green-700 text-white p-3 rounded-xl hover:bg-green-800 transition"
         >
           {props.darkMode ? <Sun size={20} /> : <Moon size={20} />}
+        </button>
+
+        {/* Logout Button */}
+        <button
+          onClick={logout}
+          className="bg-red-500 text-white px-4 py-2 rounded-xl"
+        >
+          Logout
         </button>
 
       </div>

@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { loginUser } from "../services/authService"
+import { Navigate, Link } from "react-router-dom"
 
 function Login() {
 
@@ -37,6 +38,13 @@ function Login() {
     }
   }
 
+  const token =
+    localStorage.getItem("token")
+
+  if (token) {
+    return <Navigate to="/" />
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center">
 
@@ -71,6 +79,19 @@ function Login() {
         >
           Login
         </button>
+
+        <p className="text-center mt-4">
+
+          New to QuickLeaf?
+
+          <Link
+            to="/register"
+            className="text-green-700 font-semibold ml-1"
+          >
+            Register
+          </Link>
+
+        </p>
 
       </div>
 

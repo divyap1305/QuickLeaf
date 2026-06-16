@@ -1,17 +1,27 @@
 import { Search, Moon, Sun } from "lucide-react"
+import { useState } from "react"
+import LogoutModal from "./LogoutModal"
 
 function Navbar(props) {
 
   const user = JSON.parse(
     localStorage.getItem("user")
   )
+  
+  const [showProfile, setShowProfile] = useState(false)
 
-  function logout() {
+  const [showLogoutModal, setShowLogoutModal] = useState(false)
+
+  function confirmLogout() {
+
     localStorage.removeItem("token")
     localStorage.removeItem("user")
 
-    window.location.replace("/login")
+    window.location.replace(
+      "/login"
+    )
   }
+
 
   return (
     <div className={`shadow-sm p-4 flex flex-col md:flex-row md:items-center md:justify-between gap-4
@@ -59,36 +69,57 @@ function Navbar(props) {
         </button>
 
         {/* User Info */}
-        <div className="hidden md:flex flex-col text-right">
-          <span
-            className={`font-semibold
-              ${
-                props.darkMode
-                  ? "text-white"
-                  : "text-gray-800"
-              }
-            `}
-          >
-            Welcome Back 👋
-          </span>
+        <div className="relative">
 
-          <span
-            className={`text-sm
-              ${
-                props.darkMode
-                  ? "text-gray-400"
-                  : "text-gray-600"
-              }
-            `}
+          <button
+            onClick={() =>
+              setShowProfile(
+                !showProfile
+              )
+            }
+            className="text-right"
           >
-            {user?.name}
-          </span>
+
+            <p className="font-semibold">
+              {user?.name} ▼
+            </p>
+
+          </button>
+
+          {showProfile && (
+
+            <div
+              className="
+                absolute
+                right-0
+                mt-2
+                w-60
+                bg-white
+                text-black
+                rounded-xl
+                shadow-lg
+                p-4
+                z-50
+              "
+            >
+
+              <p className="font-semibold">
+                {user?.name}
+              </p>
+
+              <p className="text-sm text-gray-600">
+                {user?.email}
+              </p>
+
+            </div>
+
+          )}
 
         </div>
 
         {/* Logout Button */}
         <button
-          onClick={logout}
+          onClick={() => setShowLogoutModal(true)}
           className="
             bg-red-500
             hover:bg-red-600
@@ -103,6 +134,14 @@ function Navbar(props) {
         </button>
 
       </div>
+
+      <LogoutModal
+        show={showLogoutModal}
+        onCancel={() =>
+          setShowLogoutModal(false)
+        }
+        onConfirm={confirmLogout}
+      />
 
     </div>
   )

@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { registerUser } from "../services/authService"
+import { Navigate, Link } from "react-router-dom"
 
 function Register() {
 
@@ -32,6 +33,12 @@ function Register() {
 
       alert("Registration Failed")
     }
+  }
+  const token =
+    localStorage.getItem("token")
+
+  if (token) {
+    return <Navigate to="/" />
   }
 
   return (
@@ -77,6 +84,19 @@ function Register() {
         >
           Register
         </button>
+
+        <p className="text-center mt-4">
+
+          Already have an account?
+
+          <Link
+            to="/login"
+            className="text-green-700 font-semibold ml-1"
+          >
+            Login
+          </Link>
+
+        </p>
 
       </div>
 

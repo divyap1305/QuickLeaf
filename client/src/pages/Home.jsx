@@ -2,7 +2,6 @@ import { useState, useEffect } from "react"
 import { ToastContainer, toast } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 
-
 import {
   getNotes,
   createNote,
@@ -22,73 +21,117 @@ function Home() {
   const [notes, setNotes] = useState([])
 
   const [darkMode, setDarkMode] = useState(() => {
-    const savedTheme = localStorage.getItem("quickleaf-theme")
+
+    const savedTheme =
+      localStorage.getItem("quickleaf-theme")
+
     return savedTheme === "dark"
+
   })
 
   const [title, setTitle] = useState("")
   const [content, setContent] = useState("")
   const [tag, setTag] = useState("General")
   const [editingId, setEditingId] = useState(null)
-  const [search, setSearch] = useState("")
-  const [selectedTag, setSelectedTag] = useState("All")
-  const [viewMode, setViewMode] = useState("all")
 
-  const [showDeleteModal, setShowDeleteModal] = useState(false)
-  const [selectedNoteId, setSelectedNoteId] = useState(null)
+  const [search, setSearch] = useState("")
+
+  const [selectedTag, setSelectedTag] =
+    useState("All")
+
+  const [viewMode, setViewMode] =
+    useState("all")
+
+  const [showDeleteModal,
+    setShowDeleteModal] =
+    useState(false)
+
+  const [selectedNoteId,
+    setSelectedNoteId] =
+    useState(null)
 
   // Fetch Notes
+
   async function fetchNotes() {
+
     try {
-      const data = await getNotes()
+
+      const data =
+        await getNotes()
+
       setNotes(data)
+
     } catch (error) {
+
       console.log(error)
+
     }
   }
 
   useEffect(() => {
+
     fetchNotes()
+
   }, [])
 
   // Save Theme
+
   useEffect(() => {
+
     localStorage.setItem(
       "quickleaf-theme",
       darkMode ? "dark" : "light"
     )
+
   }, [darkMode])
 
   // Toggle Theme
+
   function toggleDarkMode() {
+
     setDarkMode(!darkMode)
+
   }
 
   // Inputs
+
   function handleTitleChange(event) {
+
     setTitle(event.target.value)
+
   }
 
   function handleContentChange(event) {
+
     setContent(event.target.value)
+
   }
 
   function handleSearch(event) {
+
     setSearch(event.target.value)
+
   }
 
   function handleTagChange(event) {
+
     setTag(event.target.value)
+
   }
 
   // Create / Update Note
+
   async function addNote() {
 
     if (
       title.trim() === "" ||
       content.trim() === ""
     ) {
-      alert("Please fill all fields")
+
+      toast.error(
+        "Please fill all fields"
+      )
+
       return
     }
 
@@ -104,7 +147,10 @@ function Home() {
             tag
           }
         )
-        toast.success("Note Updated ✏️")
+
+        toast.success(
+          "Note Updated ✏️"
+        )
 
       } else {
 
@@ -113,7 +159,10 @@ function Home() {
           content,
           tag
         })
-        toast.success("Note Created 🌿")
+
+        toast.success(
+          "Note Created 🌿"
+        )
 
       }
 
@@ -127,104 +176,156 @@ function Home() {
     } catch (error) {
 
       console.log(error)
+
+      toast.error(
+        "Something went wrong"
+      )
     }
   }
 
-  // Edit
+  // Edit Note
+
   function startEditing(note) {
 
     setTitle(note.title)
     setContent(note.content)
-    setEditingId(note._id)
     setTag(note.tag || "General")
+
+    setEditingId(note._id)
+
   }
 
   // Delete Modal
+
   function openDeleteModal(id) {
 
     setSelectedNoteId(id)
+
     setShowDeleteModal(true)
+
   }
 
   function closeDeleteModal() {
 
-    setShowDeleteModal(false)
     setSelectedNoteId(null)
+
+    setShowDeleteModal(false)
+
   }
 
   async function confirmDelete() {
 
     try {
 
-      await deleteNoteById(selectedNoteId)
+      await deleteNoteById(
+        selectedNoteId
+      )
 
       await fetchNotes()
 
       closeDeleteModal()
-      toast.success("Note Deleted 🗑️")
+
+      toast.success(
+        "Note Deleted 🗑️"
+      )
 
     } catch (error) {
 
       console.log(error)
+
+      toast.error(
+        "Failed to delete note"
+      )
     }
   }
 
   // Pin Note
+
   async function handlePin(id) {
 
     try {
 
       await togglePin(id)
-      toast.success("Note Pinned 📌")
 
       await fetchNotes()
+
+      toast.success(
+        "Note Pinned 📌"
+      )
 
     } catch (error) {
 
       console.log(error)
+
+      toast.error(
+        "Failed to pin note"
+      )
     }
   }
 
   // Filter + Sort
+
   const filteredNotes = notes
-  .filter((note) => {
 
-    const matchesSearch =
-      note.title
-        .toLowerCase()
-        .includes(search.toLowerCase()) ||
+    .filter((note) => {
 
-      note.content
-        .toLowerCase()
-        .includes(search.toLowerCase())
+      const matchesSearch =
 
-    const matchesTag =
-      selectedTag === "All" ||
-      note.tag === selectedTag
+        note.title
+          .toLowerCase()
+          .includes(
+            search.toLowerCase()
+          ) ||
 
-    const matchesView =
-      viewMode === "all" ||
-      (viewMode === "pinned" && note.pinned)
+        note.content
+          .toLowerCase()
+          .includes(
+            search.toLowerCase()
+          )
 
-    return (
-      matchesSearch &&
-      matchesTag &&
-      matchesView
-    )
+      const matchesTag =
 
-  })
-  .sort((a, b) => {
+        selectedTag === "All" ||
 
-    if (a.pinned === b.pinned) {
-      return 0
-    }
+        note.tag === selectedTag
 
-    return a.pinned ? -1 : 1
-  })
+      const matchesView =
+
+        viewMode === "all" ||
+
+        (
+          viewMode === "pinned" &&
+          note.pinned
+        )
+
+      return (
+        matchesSearch &&
+        matchesTag &&
+        matchesView
+      )
+
+    })
+
+    .sort((a, b) => {
+
+      if (
+        a.pinned === b.pinned
+      ) {
+        return 0
+      }
+
+      return a.pinned
+        ? -1
+        : 1
+
+    })
 
   return (
+
     <div
-      className={`flex min-h-screen ${
+      className={`flex min-h-screen
+
+      ${
         darkMode
           ? "bg-gray-950"
           : "bg-gray-100"
@@ -249,48 +350,76 @@ function Home() {
           toggleDarkMode={toggleDarkMode}
         />
 
-        <div className="p-8">
+        <div className="p-6 md:p-8">
 
           <AddNote
             title={title}
             content={content}
             tag={tag}
-            handleTitleChange={handleTitleChange}
-            handleContentChange={handleContentChange}
-            handleTagChange={handleTagChange}
+            handleTitleChange={
+              handleTitleChange
+            }
+            handleContentChange={
+              handleContentChange
+            }
+            handleTagChange={
+              handleTagChange
+            }
             addNote={addNote}
             darkMode={darkMode}
             editingId={editingId}
           />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          <div
+            className="
+              grid
+              grid-cols-1
+              md:grid-cols-2
+              xl:grid-cols-3
+              gap-6
+            "
+          >
 
             {filteredNotes.length > 0 ? (
 
-              filteredNotes.map((note) => (
+              filteredNotes.map(
+                (note) => (
 
-                <NoteCard
-                  key={note._id}
-                  title={note.title}
-                  content={note.content}
-                  tag={note.tag}
-                  pinned={note.pinned}
-                  pinNote={() => handlePin(note._id)}
-                  createdAt={note.createdAt}
-                  updatedAt={note.updatedAt}
-                  editNote={() => startEditing(note)}
-                  deleteNote={() =>
-                    openDeleteModal(note._id)
-                  }
-                  darkMode={darkMode}
-                />
+                  <NoteCard
+                    key={note._id}
+                    title={note.title}
+                    content={note.content}
+                    tag={note.tag}
+                    pinned={note.pinned}
+                    createdAt={note.createdAt}
+                    updatedAt={note.updatedAt}
+                    darkMode={darkMode}
+                    pinNote={() =>
+                      handlePin(
+                        note._id
+                      )
+                    }
+                    editNote={() =>
+                      startEditing(
+                        note
+                      )
+                    }
+                    deleteNote={() =>
+                      openDeleteModal(
+                        note._id
+                      )
+                    }
+                  />
 
-              ))
+                )
+              )
 
             ) : (
 
               <div
-                className={`col-span-3 text-center text-2xl mt-10 ${
+                className={`col-span-3 text-center text-2xl mt-10
+
+                ${
                   darkMode
                     ? "text-gray-400"
                     : "text-gray-500"
@@ -311,14 +440,21 @@ function Home() {
         show={showDeleteModal}
         onCancel={closeDeleteModal}
         onConfirm={confirmDelete}
+        darkMode={darkMode}
       />
 
       <ToastContainer
         position="top-right"
         autoClose={2500}
+        theme={
+          darkMode
+            ? "dark"
+            : "light"
+        }
       />
 
     </div>
+
   )
 }
 
